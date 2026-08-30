@@ -1,5 +1,5 @@
-stalloc: lib.o
-	ld build/lib.o -o build/stalloc -dynamic-linker /lib64/ld-linux-x86-64.so.2 -lc
+stalloc: main.c lib.o
+	gcc -Wall -Wextra main.c build/lib.o -o build/stalloc
 
 lib.o: lib.asm
 	@mkdir -p build/

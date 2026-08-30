@@ -1,9 +1,6 @@
 format ELF64
 
-public _start
-
-extrn printf
-extrn exit
+public stalloc
 
 macro call_brk argument{
   mov rax, 12
@@ -12,29 +9,29 @@ macro call_brk argument{
 }
 
 define PAGESIZE 0x1000
-  
+
 section '.data' writable
-  heap_start dq 0x00
-  msg_heap_start db "brk_start: 0x%x", 0xA, 0
-  msg_heap_curr db "current brk: 0x%x", 0xA, 0
+  first_alloc dq 0x00
 
 section '.text' executable
 
-_start:
+stalloc:
+  push rdi
   call_brk 0
+  pop rdi
 
-  mov rdi, msg_heap_start
-  mov [heap_start], rax
-  mov rsi, [heap_start]
-  call printf
+  test rax, rax
+  jz .error
 
-  mov rcx, [heap_start]
-  add rcx, PAGESIZE
-  call_brk rcx
+  mov qword [first_alloc], rax
+  lea rdi, [rax+PAGESIZE]
+  call_brk rdi
 
-  mov rdi, msg_heap_curr
-  mov rsi, rax
-  call printf
+  test rax, rax
+  jz .error
 
-  xor rdi, rdi
-  call exit
+  mov rax, [first_alloc]
+  ret
+.error:
+  xor rax, rax
+  ret
