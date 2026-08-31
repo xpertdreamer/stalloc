@@ -10,7 +10,16 @@ int main(void) {
     return 1;
   }
   *a = 42;
-  printf("value:   \t%d\n", *a);
-  printf("address: \t%p", (void*)a);
+  int *b;
+  b = (int*)stalloc(sizeof(int));
+  if (b == NULL) {
+      printf("ERROR");
+      return 1;
+  }
+  *b = 38;
+  printf("a value:   \t%d\n", *a);
+  printf("a address: \t%p\n", (void *)a);
+  printf("b value:   \t%d\n", *b);
+  printf("b address: \t%p", (void*)b);
   return 0;
 }
