@@ -17,6 +17,7 @@ public stalloc
 ; Return    rax : The address of start of allocated memory
 stalloc:
   push rbx
+  sub rsp, 8
   ; check if requested number is greater than zero
   cmp rdi, 0
   jle .error
@@ -36,9 +37,10 @@ stalloc:
   jz .error
   ; return heap_start
   mov rax, [current_break]
+  add rsp, 8
+  pop rbx
   ret
 
 .error:
   xor rax, rax
-  pop rbx
   ret

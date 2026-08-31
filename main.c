@@ -1,10 +1,10 @@
 #include <stdio.h>
 
-extern void* stalloc();
+extern void* stalloc(int size);
 
 int main(void) {
   int *a;
-  a = (int*)stalloc();
+  a = (int*)stalloc(sizeof(int));
   if (a == NULL) {
     printf("ERROR");
     return 1;
