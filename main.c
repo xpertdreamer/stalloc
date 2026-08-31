@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <assert.h>
 
 extern void* stalloc(int size);
 
@@ -12,6 +13,7 @@ int main(void) {
   *a = 42;
   int *b;
   b = (int*)stalloc(sizeof(int));
+  // b = (int*)stalloc(0);
   if (b == NULL) {
       printf("ERROR");
       return 1;
