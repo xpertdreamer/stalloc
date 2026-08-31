@@ -29,4 +29,4 @@ _(RULE2)_ If not, search for free block. If free blocks doesn`t exist -> expand 
 
 _(RULE3)_ After each useful block should exist one 32-byte meta header, that contains some useful data about current block and ptr to the next block.
 
-_(RULE4)_ I don`t care about memory fragmentation and other blah-blah-blah stuff. Common it`s recreational-learning project, I`m not a professor.
+_(RULE4)_ I don't care about memory fragmentation and other blah-blah-blah stuff. Common it's recreational-learning project, I`m not a professor.

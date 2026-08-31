@@ -18,6 +18,26 @@ public stalloc
 ; Parameter rdi : The amount of memory to allocate
 ; Return    rax : The address of start of allocated memory
 stalloc:
+  jmp .init
+  ; add header size to requested size
+  add rdi, HEADERSIZE
+  ; align rdi to 8 bytes
+  add rdi, 7
+  and rdi, not 7
+  ; TODO: check if any free block exist and ...
+  ; call brk(current_break+allocation_size (for now page_size)
+  lea rdi, [rax+PAGESIZE]
+  sys_brk rdi
+  ; if brk(heap_start+page_size) == 0 -> error
+  test rax, rax
+  jz .error
+  ; return current_break
+  mov rax, [current_break]
+  add rsp, 8
+  pop rbx
+  ret
+
+.init:
   push rbx
   sub rsp, 8
   ; check if requested number is greater than zero
@@ -30,22 +50,8 @@ stalloc:
   ; if brk(0) == 0 -> error
   test rax, rax
   jz .error
-  ; add header size to requested size
-  add rdi, HEADERSIZE
-  ; align rdi to 8 bytes
-  add rdi, 7
-  and rdi, not 7
-  ; move brk(0) returned address to mem and call brk(current_break+allocation_size (for now page_size))
+  ; move brk(0) returned address to mem and
   mov qword [current_break], rax
-  lea rdi, [rax+PAGESIZE]
-  sys_brk rdi
-  ; if brk(heap_start+page_size) == 0 -> error
-  test rax, rax
-  jz .error
-  ; return current_break
-  mov rax, [current_break]
-  add rsp, 8
-  pop rbx
   ret
 
 .error:
