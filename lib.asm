@@ -1,6 +1,6 @@
 format ELF64
 
-public stalloc
+define PAGESIZE 0x1000
 
 macro sys_brk argument{
   mov rax, 12
@@ -8,14 +8,18 @@ macro sys_brk argument{
   syscall
 }
 
-define PAGESIZE 0x1000
-
 section '.data' writable
-  first_alloc dq 0x00
+  current_break dq 0x00
 
 section '.text' executable
-
+public stalloc
+; Parameter rdi : The amount of memory to allocate
+; Return    rax : The address of start of allocated memory
 stalloc:
+  push rbx
+  ; check if requested number is greater than zero
+  cmp rdi, 0
+  jle .error
   ; brk(0) call to find heap start
   push rdi
   sys_brk 0
@@ -23,16 +27,18 @@ stalloc:
   ; if brk(0) == 0 -> error
   test rax, rax
   jz .error
-  ; mov brk(0) returned address to mem and call brk(heap_start+page_size)
-  mov qword [first_alloc], rax
+  ; mov brk(0) returned address to mem and call brk(heap_start+allocation_size)
+  mov qword [current_break], rax
   lea rdi, [rax+PAGESIZE]
   sys_brk rdi
   ; if brk(heap_start+page_size) == 0 -> error
   test rax, rax
   jz .error
   ; return heap_start
-  mov rax, [first_alloc]
+  mov rax, [current_break]
   ret
+
 .error:
   xor rax, rax
+  pop rbx
   ret
