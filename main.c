@@ -7,7 +7,7 @@ do {                                                            \
 
 #define ADIFF(l, r)                                                     \
 do {                                                                    \
-   printf("diff %s:%s %d bytes", #l, #r, (int)((void*)r - (void*)l));   \
+   printf("diff %s:%s %d bytes\n", #l, #r, (int)((void*)r - (void*)l)); \
 } while (0);
 
 extern void* stalloc(int size);
