@@ -14,6 +14,7 @@ macro sys_brk argument{
 }
 
 section '.data' writable
+  heap_start dq 0x00
   current_break dq 0x00
 
 section '.text' executable
@@ -42,6 +43,7 @@ stalloc:
   cmp rax, -1
   je .error
   mov [current_break], rax
+  mov [heap_start], rax
 
 
 .skip_init:
@@ -53,7 +55,9 @@ stalloc:
   and rdi, not 7
 
   ; TODO: check if any free block exist and place new block in first found spot
+  ; call .find_free
 
+.no_free_blocks:
   ; start of new adress calculation
   ; allocation_size = (size + PAGESIZE - 1) / PAGESIZE
   mov rax, rdi
@@ -79,11 +83,21 @@ stalloc:
   ; save meta in header
   mov qword [r8+HEADER_FLAG], 1
   mov qword [r8+HEADER_SIZE], rbx
+  ; find next block
+  ; push rax
+  ; call .find_next
   mov qword [r8+HEADER_NEXT], rax ; temporary, while allocating one page each call
 
   ; return pointer to data block (right after header)
+  ; pop rax
   mov [current_break], rax
   lea rax, [r8+HEADERSIZE]
+
+; .find_next:
+;   ret
+
+;.find_free:
+;  ret
 
 .success:
   pop rdx
