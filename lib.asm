@@ -3,9 +3,9 @@ format ELF64
 define PAGESIZE   0x1000
 define HEADERSIZE 0x0018
 
-define HEADER_FLAG 0x0000
+define HEADER_FLAG 0x0000 ; 0 - free, 1 - in-use
 define HEADER_SIZE 0x0008
-define HEADER_NEXT 0x0010
+define HEADER_NEXT 0x0010 ; address
 
 macro sys_brk argument{
   mov rax, 12
@@ -78,19 +78,9 @@ stalloc:
   ; return old break
   mov [current_break], rax
 
-  call .set_header
-
   mov rax, r8
   pop rdx
   pop rbx
-  ret
-
-.set_header:
-  mov r9, [current_break]
-  sub r9, HEADERSIZE
-  mov qword [r9+HEADER_FLAG], 1
-  mov qword [r9+HEADER_SIZE], rbx
-  ; mov qword [r9+HEADER_NEXT], next_block
   ret
 
 .error:
