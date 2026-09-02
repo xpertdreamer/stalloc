@@ -57,6 +57,7 @@ stalloc:
   mov rbx, PAGESIZE
   div rbx
   mov rcx, rax
+  ; get expansion size
   imul rcx, PAGESIZE
 
   ; TODO: check if any free block exist and ...
