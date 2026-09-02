@@ -60,6 +60,7 @@ stalloc:
   ; get expansion size
   imul rcx, PAGESIZE
 
+  ; TODO: write information to the header to properly handle new allocations
   ; TODO: check if any free block exist and ...
   ; call brk(current_break+allocation_size (for now page_size*n, where n=number of pages needed)
   add rcx, [current_break]
