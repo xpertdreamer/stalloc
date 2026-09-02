@@ -5,9 +5,9 @@ do {                                                            \
     printf("%s\t%d\t%p\n", #var, *var, (void *)var);            \
 } while (0);
 
-#define ADIFF(l, r)                                        \
-do {                                                       \
-   printf("diff: %d bytes", (int)((void*)r - (void*)l));   \
+#define ADIFF(l, r)                                                     \
+do {                                                                    \
+   printf("diff %s:%s %d bytes", #l, #r, (int)((void*)r - (void*)l));   \
 } while (0);
 
 extern void* stalloc(int size);
