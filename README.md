@@ -18,6 +18,11 @@ I think two public (linker visible) functions will be enough:
 ## References:
   - <https://danluu.com/malloc-tutorial/>
   - <https://bencoveney.com/posts/allocator.html>
+  - <https://man7.org/linux/man-pages/man2/brk.2.html>
+  - <https://github.com/rust-lang/rfcs/issues/2844>
+  - <https://silent-tower.net/projects/visual-overview-malloc>
+  - <https://mitjafelicijan.com/calling-assembly-functions-from-c.html>
+  - <https://www.chromium.org/chromium-os/developer-library/reference/linux-constants/syscalls/>
 
 ## TODO: 
 _(RULE1)_ If it`s first allocation -> check the size of requested memory:
