@@ -19,6 +19,7 @@ public stalloc
 ; Return    rax : The address of start of allocated memory
 stalloc:
   ; according to abi we need to save rbx
+  push rbx
   mov r8, rdi
   ; check if requested number is greater than zero
   cmp rdi, 0
@@ -51,8 +52,10 @@ stalloc:
   ; return current_break
   mov [current_break], rax
   mov rax, r9
+  pop rbx
   ret
 
 .error:
   xor rax, rax
+  pop rbx
   ret
