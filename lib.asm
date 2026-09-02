@@ -68,6 +68,7 @@ stalloc:
 
   ; TODO: write information to the header to properly handle new allocations
   ; call brk(current_break+allocation_size (for now page_size*n, where n=number of pages needed)
+  mov rbx, rcx
   add rcx, [current_break]
   sys_brk rcx
 
@@ -75,9 +76,14 @@ stalloc:
   cmp rax, -1
   je .error
 
-  ; return old break
+  ; save meta in header
+  mov qword [r8+HEADER_FLAG], 1
+  mov qword [r8+HEADER_SIZE], rbx
+  mov qword [r8+HEADER_NEXT], rax ; temporary, while allocating one page each call
+
+  ; return pointer to data block (right after header)
   mov [current_break], rax
-  mov rax, r8
+  lea rax, [r8+HEADERSIZE]
 
 .success:
   pop rdx
