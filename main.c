@@ -1,4 +1,10 @@
 #include <stdio.h>
+#include <stdint.h>
+
+#define HEADERSIZE 0x18
+#define HEADER_FLAG 0x00
+#define HEADER_SIZE 0x08
+#define HEADER_NEXT 0x10
 
 #define TRACE(var)                                              \
 do {                                                            \
@@ -9,6 +15,15 @@ do {                                                            \
 do {                                                                    \
    printf("diff %s:%s %d bytes\n", #l, #r, (int)((void*)r - (void*)l)); \
 } while (0);
+
+#define VALHEAD(var)                                        \
+    do {                                                    \
+        uint8_t *header = (uint8_t *)(var) - HEADERSIZE;    \
+        printf("header\tflag=%lu\tsize=%lu\tnext=%p\n",     \
+               *(uint64_t*)(header + HEADER_FLAG),          \
+               *(uint64_t*)(header + HEADER_SIZE),          \
+               (void*)*(uint64_t*)(header + HEADER_NEXT));  \
+} while(0);
 
 extern void* stalloc(int size);
 
@@ -32,5 +47,7 @@ int main(void) {
   TRACE(a);
   TRACE(b);
   ADIFF(a, b);
+  VALHEAD(a);
+  VALHEAD(b);
   return 0;
 }
