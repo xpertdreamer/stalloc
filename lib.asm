@@ -20,6 +20,7 @@ public stalloc
 stalloc:
   ; according to abi we need to save rbx
   push rbx
+  push rdx
 
   ; check if requested number is greater than zero
   cmp rdi, 0
@@ -47,12 +48,21 @@ stalloc:
   lea rdi, [rbx + HEADERSIZE + 7]
   and rdi, not 7
 
-  ; TODO: allocation_size = (size + PAGESIZE - 1) / PAGESIZE
+  ; start of new adress calculation
+  ; allocation_size = (size + PAGESIZE - 1) / PAGESIZE
+  mov rax, rdi
+  add rax, PAGESIZE
+  dec rax
+  xor rdx, rdx
+  mov rbx, PAGESIZE
+  div rbx
+  mov rcx, rax
+  imul rcx, PAGESIZE
+
   ; TODO: check if any free block exist and ...
-  ; call brk(current_break+allocation_size (for now page_size)
-  add rdi, [current_break]
-  add rdi, PAGESIZE
-  sys_brk rdi
+  ; call brk(current_break+allocation_size (for now page_size*n, where n=number of pages needed)
+  add rcx, [current_break]
+  sys_brk rcx
 
   ; if brk(heap_start+page_size) != 0 -> error
   cmp rax, -1
@@ -61,10 +71,12 @@ stalloc:
   ; return old break
   mov [current_break], rax
   mov rax, r8
+  pop rdx
   pop rbx
   ret
 
 .error:
   xor rax, rax
+  pop rdx
   pop rbx
   ret
