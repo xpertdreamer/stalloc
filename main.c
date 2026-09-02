@@ -18,16 +18,13 @@ int main(void) {
   *a = 42;
   int *b;
   b = (int*)stalloc(sizeof(int));
-  // b = (int*)stalloc(0);
+  // b = (int*)stalloc(0); // used to debug
   if (b == NULL) {
       printf("ERROR");
       return 1;
   }
   *b = 38;
-  /* printf("a value:   \t%d\n", *a); */
-  /* printf("a address: \t%p\n", (void *)a); */
-  /* printf("b value:   \t%d\n", *b); */
-  /* printf("b address: \t%p", (void*)b); */
+
   TRACE(a);
   TRACE(b);
   return 0;
