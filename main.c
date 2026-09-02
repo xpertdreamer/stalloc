@@ -11,7 +11,7 @@ int main(void) {
   int *a;
   a = (int*)stalloc(sizeof(int));
   if (a == NULL) {
-    printf("ERROR");
+    printf("ERROR: a is NULL");
     return 1;
   }
   *a = 42;
@@ -19,7 +19,7 @@ int main(void) {
   b = (int*)stalloc(sizeof(int));
   // b = (int*)stalloc(0); // used to debug
   if (b == NULL) {
-      printf("ERROR");
+      printf("ERROR: b is NULL");
       return 1;
   }
   *b = 38;
