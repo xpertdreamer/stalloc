@@ -18,7 +18,6 @@ section '.data' writable
 
 section '.text' executable
 public stalloc
-; TODO: now it doesnt deal with parameter, so, need to implement that
 ; Parameter rdi : The amount of memory to allocate
 ; Return    rax : The address of start of allocated memory
 stalloc:
@@ -33,16 +32,17 @@ stalloc:
   ; save rdi
   mov rbx, rdi
 
-  ; brk(0) call to find current break
-  sys_brk 0
-  ; if brk(0) != 0 -> error
-  cmp rax, -1
-  je .error
-
   ; check if current_break == 0 -> move brk(0) returned address to mem
   cmp qword [current_break], 0
   jne .skip_init
+
+  ; brk(0) call to find current break
+  sys_brk 0
+  ; if brk(0) == -1 -> error
+  cmp rax, -1
+  je .error
   mov [current_break], rax
+
 
 .skip_init:
   ; save old break to return
@@ -52,6 +52,7 @@ stalloc:
   lea rdi, [rbx + HEADERSIZE + 7]
   and rdi, not 7
 
+  ; TODO: check if any free block exist and place new block in first found spot
 
   ; start of new adress calculation
   ; allocation_size = (size + PAGESIZE - 1) / PAGESIZE
@@ -66,7 +67,6 @@ stalloc:
   imul rcx, PAGESIZE
 
   ; TODO: write information to the header to properly handle new allocations
-  ; TODO: check if any free block exist and ...
   ; call brk(current_break+allocation_size (for now page_size*n, where n=number of pages needed)
   add rcx, [current_break]
   sys_brk rcx
@@ -77,8 +77,9 @@ stalloc:
 
   ; return old break
   mov [current_break], rax
-
   mov rax, r8
+
+.success:
   pop rdx
   pop rbx
   ret
