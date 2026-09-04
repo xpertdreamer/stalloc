@@ -25,7 +25,8 @@ do {                                                                    \
                (void*)*(uint64_t*)(header + HEADER_NEXT));  \
 } while(0);
 
-extern void* stalloc(int size);
+extern void *stalloc(int size);
+extern _Bool frag(void* ptr);
 
 int main(void) {
   int *a;
@@ -44,6 +45,13 @@ int main(void) {
   }
   *b = 38;
 
+  TRACE(a);
+  TRACE(b);
+  ADIFF(a, b);
+  VALHEAD(a);
+  VALHEAD(b);
+  frag(a);
+  frag(b);
   TRACE(a);
   TRACE(b);
   ADIFF(a, b);
