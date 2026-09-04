@@ -83,21 +83,11 @@ stalloc:
   ; save meta in header
   mov qword [r8+HEADER_FLAG], 1
   mov qword [r8+HEADER_SIZE], rbx
-  ; find next block
-  ; push rax
-  ; call .find_next
   mov qword [r8+HEADER_NEXT], rax ; temporary, while allocating one page each call
 
   ; return pointer to data block (right after header)
-  ; pop rax
   mov [current_break], rax
   lea rax, [r8+HEADERSIZE]
-
-; .find_next:
-;   ret
-
-;.find_free:
-;  ret
 
 .success:
   pop rdx
