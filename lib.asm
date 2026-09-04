@@ -88,7 +88,7 @@ stalloc:
   ; return pointer to data block (right after header)
   mov [current_break], rax
   lea rax, [r8+HEADERSIZE]
-
+  
 .success:
   pop rdx
   pop rbx
@@ -98,4 +98,31 @@ stalloc:
   xor rax, rax
   pop rdx
   pop rbx
+  ret
+
+public frag
+; parameter rdi : The address of memory block to free
+; TODO: merge two free blocks standing next to each other
+frag:
+  ; check if pointer even providen
+  cmp rdi, 0
+  je .error
+
+  ; check if ptr not < heap start
+  cmp rdi, [heap_start]
+  jb .error
+
+  ; find 'in-use flag' and check if its in use
+  sub rdi, HEADERSIZE
+  cmp qword [rdi+HEADER_FLAG], 1
+  jne .error
+
+  ; if not in use - set 'in-use flag' to 0
+  mov qword [rdi+HEADER_FLAG], 0
+
+.done:
+  mov rax, 1
+  ret
+.error:
+  xor rax, rax
   ret
