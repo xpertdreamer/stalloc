@@ -9,7 +9,7 @@ I think two public (linker visible) functions will be enough:
 
   - ``stalloc(size_in_bytes) -> address``
   
-  - ``frag(address) -> void``
+  - ``frag(address) -> boolean``
 
 ## Dependencies:
   - **fasm**
